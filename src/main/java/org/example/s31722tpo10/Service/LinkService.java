@@ -79,6 +79,7 @@ public class LinkService {
     public URI resolveAndCountVisits(String id) {
         Link link = _linkRepository.findById(id).orElseThrow();
         link.setVisitsCount(link.getVisitsCount() + 1);
+        _linkRepository.save(link);
         return URI.create(link.getTargetURL());
     }
 

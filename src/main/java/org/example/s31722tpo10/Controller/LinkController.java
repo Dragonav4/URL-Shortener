@@ -5,7 +5,6 @@ import org.example.s31722tpo10.Utils.DeleteRes;
 import org.example.s31722tpo10.Service.LinkService;
 import org.example.s31722tpo10.Utils.ErrorMapper;
 import org.example.s31722tpo10.Utils.UpdateRes;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -18,7 +17,6 @@ public class LinkController {
     private final LinkService service;
 
     public LinkController(LinkService service) {
-        System.out.println(">>> INJECTED SERVICE? " + service);
 
         this.service = service;
     }
@@ -52,13 +50,6 @@ public class LinkController {
         DeleteRes res = service.delete(id, pass);
         return ErrorMapper.map(res);
     }
-
-    private ResponseEntity<Void> forbiddenWrongPass() {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .header("reason", "wrong password")
-                .build();
-    }
-
     private String currentBase() {
         return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
     }

@@ -1,6 +1,7 @@
 package org.example.s31722tpo10.Controller;
 
 import org.example.s31722tpo10.Service.LinkService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,5 +31,13 @@ public class RedirectController {
         } catch (NoSuchElementException ex) {
             return ResponseEntity.notFound().build();
         }
+    }
+    @GetMapping("/{id}/debug")
+    public ResponseEntity<String> redirectDebug(@PathVariable String id) {
+        URI target = service.resolveAndCountVisits(id);
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .header(HttpHeaders.LOCATION, target.toString())
+                .body("Redirect → " + target);
     }
 }
