@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Link Details</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h1>Link Details</h1>
+  <p><strong>Name:</strong> <span th:text="${link.name}"></span></p>
+  <p><strong>Target URL:</strong> <span th:text="${link.targetUrl}"></span></p>
+  <p><strong>Redirect URL:</strong> <span th:text="${link.redirectUrl}"></span></p>
+  <p><strong>Visits Count:</strong> <span th:text="${link.visitsCount}"></span></p>
+  <a th:href="@{'/links/' + ${link.id} + '/edit'}" class="btn btn-secondary">Edit</a>
+  <form th:action="@{'/links/' + ${link.id} + '/delete'}" method="post" style="display:inline;">
+    <input type="hidden" name="password" value="">
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form>
+</div>
+</body>
+</html>

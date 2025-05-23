@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface LinkRepository extends JpaRepository<Link, Repository> {
     Optional<Link> findById(String id);
+    boolean existsByTargetURL(String targetUrl);
 }

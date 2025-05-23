@@ -1,18 +1,31 @@
 package org.example.s31722tpo10.DataLayer.Models;
 
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.example.s31722tpo10.Constraints.PasswordComplex;
+import org.example.s31722tpo10.Constraints.UniqueUrl;
+import org.hibernate.validator.constraints.URL;
+
 public class LinkDTO {
     private String Id;
-    private String Name;
+    @NotBlank(message = "{link.name.blank}")
+    @Size(min=5,max=20, message = "{link.name.size}")
+    private String name;
+    @NotBlank(message = "{link.url.blank}")
+    @URL(protocol = "https", message = "{link.url.https}")
+    @URL(message = "{link.url.invalid}") //todo нужно ли?
+    @UniqueUrl
     private String targetUrl;
     private String redirectUrl;
     private long visitsCount;
+    @PasswordComplex()
     private String password;
 
 
     public LinkDTO(String id, String name, String targetUrl, String redirectUrl, long visitsCount, String password) {
         Id = id;
-        Name = name;
+        this.name = name;
         this.targetUrl = targetUrl;
         this.redirectUrl = redirectUrl;
         this.visitsCount = visitsCount;
@@ -36,7 +49,7 @@ public class LinkDTO {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public String getTargetUrl() {
@@ -56,7 +69,7 @@ public class LinkDTO {
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public void setTargetUrl(String targetUrl) {

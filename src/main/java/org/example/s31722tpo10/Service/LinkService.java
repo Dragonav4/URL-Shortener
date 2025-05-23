@@ -1,5 +1,8 @@
 package org.example.s31722tpo10.Service;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.example.s31722tpo10.DataLayer.Link;
 import org.example.s31722tpo10.DataLayer.Models.LinkDTO;
 import org.example.s31722tpo10.Interfaces.LinkRepository;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.security.SecureRandom;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -24,9 +28,12 @@ public class LinkService {
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-    public LinkService(LinkRepository _linkRepository, LinkMapper _mapper) {
+    private final Validator validator;
+
+    public LinkService(LinkRepository _linkRepository, LinkMapper _mapper, Validator validator) {
         this._linkRepository = _linkRepository;
         this._mapper = _mapper;
+        this.validator = validator;
     }
 
     private String generateRandomSlug() {
@@ -39,6 +46,8 @@ public class LinkService {
     }
 
     public LinkDTO create(LinkDTO dto, String baseURL) {
+        Set<ConstraintViolation<LinkDTO>> violations = validator.validate(dto);
+        if(!violations.isEmpty()) throw new ConstraintViolationException(violations);
         Link entity = _mapper.toEntity(dto);
         entity.setId(generateRandomSlug());
         entity.setPasswordHash(dto.getPassword() == null ? null : passwordEncoder.encode(dto.getPassword()));
@@ -58,6 +67,7 @@ public class LinkService {
                     if (passwordOk(link, password)) return UpdateRes.WRONG_PASSWORD;
                     if (patch.getName() != null) link.setName(patch.getName());
                     if (patch.getTargetUrl() != null) link.setTargetURL(patch.getTargetUrl());
+                    _linkRepository.save(link);
                     return UpdateRes.OK;
                 })
                 .orElse(UpdateRes.NOT_FOUND);

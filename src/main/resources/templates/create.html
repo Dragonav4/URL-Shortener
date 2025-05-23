@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Create Link</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <p style="color:red">DEBUG lang = [[${param.lang}]]</p>
+    <h1>Create a New Link</h1>
+    <form id="localeForm" th:action="@{/links/create}" method="get" class="mb-3">
+        <select name="lang" onchange="document.getElementById('localeForm').submit()" class="form-control w-auto d-inline-block">
+
+            <option value="en" th:selected="${#locale.language=='en'}">English</option>
+            <option value="pl" th:selected="${#locale.language=='pl'}">Polski</option>
+            <option value="de" th:selected="${#locale.language=='de'}">Deutsch</option>
+        </select>
+    </form>
+    <form th:action="@{/links/create}" th:object="${link}" method="post">
+        <input type="hidden" name="lang" th:value="${param.lang}" />
+        <div>
+            <label>Name:</label>
+            <input type="text" th:field="*{name}" />
+            <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+        <div>
+            <label>Target URL:</label>
+            <input type="text" th:field="*{targetUrl}" />
+            <div class="error" th:if="${#fields.hasErrors('targetUrl')}" th:errors="*{targetUrl}"></div>
+        </div>
+        <div>
+            <label>Password:</label>
+            <input type="text" th:field="*{password}" />
+            <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+        <button type="submit">Create</button>
+    </form>
+</div>
+</body>
+</html>

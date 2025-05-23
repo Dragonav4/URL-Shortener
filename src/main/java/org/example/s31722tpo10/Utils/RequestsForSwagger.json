@@ -1,0 +1,14 @@
+
+{
+  "name": "CREATE",
+  "targetUrl": "https://create.com",
+  "password": "create"
+};
+
+{
+  "name": "Update",
+  "targetUrl": "https://spring.io",
+  "password": ""
+}
+
+
