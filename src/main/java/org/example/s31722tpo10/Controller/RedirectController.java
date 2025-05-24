@@ -32,12 +32,4 @@ public class RedirectController {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping("/{id}/debug")
-    public ResponseEntity<String> redirectDebug(@PathVariable String id) {
-        URI target = service.resolveAndCountVisits(id);
-        return ResponseEntity
-                .status(HttpStatus.FOUND)
-                .header(HttpHeaders.LOCATION, target.toString())
-                .body("Redirect → " + target);
-    }
 }

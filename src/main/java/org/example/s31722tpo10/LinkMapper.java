@@ -12,7 +12,7 @@ public class LinkMapper {
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setTargetUrl(entity.getTargetURL());
-        dto.setRedirectUrl(baseURL + "/red" + entity.getId());
+        dto.setRedirectUrl(baseURL + "/red/" + entity.getId());
         dto.setVisitsCount(entity.getVisitsCount());
         return dto;
     }

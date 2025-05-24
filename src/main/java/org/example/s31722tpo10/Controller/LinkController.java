@@ -32,7 +32,7 @@ public class LinkController {
     @GetMapping("/{id}")
     public ResponseEntity<LinkDTO> get(@PathVariable String id) {
         String base = currentBase();
-        return service.get(id, base)
+        return service.get(id, base) //todo split get into two separate methods(with base url)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>Create Link</title>
+    <title th:text="#{create.title}">Create Link</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container">
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+    <div th:if="${deletedMessage}" class="alert alert-success" th:text="${deletedMessage}"></div>
     <p style="color:red">DEBUG lang = [[${param.lang}]]</p>
-    <h1>Create a New Link</h1>
+    <h1 class="text-center" th:text="#{create.heading}">Create a New Link</h1>
     <form id="localeForm" th:action="@{/links/create}" method="get" class="mb-3">
         <select name="lang" onchange="document.getElementById('localeForm').submit()" class="form-control w-auto d-inline-block">
 
@@ -18,23 +21,26 @@
     </form>
     <form th:action="@{/links/create}" th:object="${link}" method="post">
         <input type="hidden" name="lang" th:value="${param.lang}" />
-        <div>
-            <label>Name:</label>
-            <input type="text" th:field="*{name}" />
-            <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        <div class="mb-3">
+            <label th:text="#{label.name}">Name:</label>
+            <input type="text" th:field="*{name}" class="form-control" />
+            <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
         </div>
-        <div>
-            <label>Target URL:</label>
-            <input type="text" th:field="*{targetUrl}" />
-            <div class="error" th:if="${#fields.hasErrors('targetUrl')}" th:errors="*{targetUrl}"></div>
+        <div class="mb-3">
+            <label th:text="#{label.targetUrl}">Target URL:</label>
+            <input type="text" th:field="*{targetUrl}" class="form-control" />
+            <div class="text-danger small" th:if="${#fields.hasErrors('targetUrl')}" th:errors="*{targetUrl}"></div>
         </div>
-        <div>
-            <label>Password:</label>
-            <input type="text" th:field="*{password}" />
-            <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        <div class="mb-3">
+            <label th:text="#{label.password}">Password:</label>
+            <input type="text" th:field="*{password}" class="form-control" />
+            <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
         </div>
-        <button type="submit">Create</button>
+        <button type="submit" class="btn btn-primary" th:text="#{btn.create}">Create</button>
     </form>
+</div>
+    </div>
+  </div>
 </div>
 </body>
 </html>

@@ -16,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Locale;
 import java.util.Optional;
+import org.springframework.ui.Model;
 
 @Controller()
 @RequestMapping("/links")
@@ -39,18 +40,24 @@ public class LinkWebController {
     @PostMapping("/create")
     public String createLink(@Valid @ModelAttribute("link") LinkDTO dto,
                              BindingResult bindingResult,
+                             Model model,
                              @RequestParam(value = "lang",defaultValue = "en") String language,
-                             HttpServletRequest request){
+                             HttpServletRequest request) {
         Locale selectedLocale = Locale.forLanguageTag(language);
         localeResolver.setLocale(request, null, selectedLocale);
-        if(bindingResult.hasErrors()){
+
+        if (bindingResult.hasErrors()) {
             return "create";
         }
+
         String baseUrl = getBaseUrl(request);
-        LinkDTO created =_linkService.create(dto,baseUrl);
-        String redirect = "redirect:/red/" + created.getId() + "?lang=" + language;
-        System.out.println(redirect);
-        return redirect;
+        LinkDTO created = _linkService.create(dto, baseUrl);
+
+        created.setRedirectUrl(baseUrl + "/red/" + created.getId());
+
+        model.addAttribute("link", created);
+        model.addAttribute("lang", language);
+        return "details";
     }
     @GetMapping("/{id}")
     public String viewLink(@PathVariable("id") String id,
@@ -60,7 +67,8 @@ public class LinkWebController {
                            HttpServletRequest request) {
         Locale selectedLocale = Locale.forLanguageTag(language);
         localeResolver.setLocale(request, null, selectedLocale);
-        Optional<LinkDTO> link = _linkService.get(id, password);
+        String baseurl = getBaseUrl(request);
+        Optional<LinkDTO> link = _linkService.get(id, baseurl);
         if (link.isEmpty()) {
             return "notFound";
         }
@@ -70,8 +78,20 @@ public class LinkWebController {
     }
 
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable String id, Model model){
-        model.addAttribute("link",_linkService.get(id,null));
+    public String showEditForm(@PathVariable String id,
+                               @RequestParam(value = "lang", defaultValue = "en") String language,
+                               HttpServletRequest request,
+                               Model model) {
+        Locale selectedLocale = Locale.forLanguageTag(language);
+        localeResolver.setLocale(request, null, selectedLocale);
+
+        Optional<LinkDTO> link = _linkService.get(id, null); //todo check it with null
+        if (link.isEmpty()) {
+            return "notFound";
+        }
+
+        model.addAttribute("link", link.get());
+        model.addAttribute("lang", language);
         return "edit";
     }
 
@@ -79,13 +99,12 @@ public class LinkWebController {
     public String editLink(@PathVariable String id,
                            @Valid @ModelAttribute("link") LinkDTO dto,
                            BindingResult bindingResult,
-                           @RequestParam(required = false) String password,
                            Model model,
                            Locale locale){
         if(bindingResult.hasErrors()){
             return "edit";
         }
-        UpdateRes res = _linkService.update(id,dto,password);
+        UpdateRes res = _linkService.update(id,dto,dto.getPassword());
         if(res!=UpdateRes.OK){
             model.addAttribute("updateError", res);
             return "edit";
@@ -94,22 +113,23 @@ public class LinkWebController {
         return "redirect:/links/"+id+"?lang="+locale.getLanguage();
     }
 
-    @PostMapping("/{id}/delete") //todo delete
+    @PostMapping("/{id}/delete") //todo add delete in edit, add add error and bootstarp
     public String deleteLink(@PathVariable String id,
                              @RequestParam(required = false) String password,
                              RedirectAttributes redirectAttributes){
         DeleteRes res = _linkService.delete(id,password);
         if(res!=DeleteRes.Ok){
-            redirectAttributes.addFlashAttribute("deleteError");
+            redirectAttributes.addFlashAttribute("deleteError", "Wrong password");
             return "redirect:/links/"+id;
         }
-        return "redirect:/links";
+        redirectAttributes.addFlashAttribute("deletedMessage",
+                "Link successfully removed");
+        return "redirect:/links/create";
     }
 
-    private String getBaseUrl(HttpServletRequest request){
+    private String getBaseUrl(HttpServletRequest request) {
         return ServletUriComponentsBuilder
-                .fromRequestUri(request)
-                .replacePath("") //todo XXXXX
+                .fromCurrentContextPath()
                 .build()
                 .toUriString();
     }

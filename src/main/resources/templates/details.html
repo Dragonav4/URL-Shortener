@@ -1,21 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Link Details</title>
+  <title th:text="#{details.title}">Link Details</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container">
-  <h1>Link Details</h1>
-  <p><strong>Name:</strong> <span th:text="${link.name}"></span></p>
-  <p><strong>Target URL:</strong> <span th:text="${link.targetUrl}"></span></p>
-  <p><strong>Redirect URL:</strong> <span th:text="${link.redirectUrl}"></span></p>
-  <p><strong>Visits Count:</strong> <span th:text="${link.visitsCount}"></span></p>
-  <a th:href="@{'/links/' + ${link.id} + '/edit'}" class="btn btn-secondary">Edit</a>
-  <form th:action="@{'/links/' + ${link.id} + '/delete'}" method="post" style="display:inline;">
-    <input type="hidden" name="password" value="">
-    <button type="submit" class="btn btn-danger">Delete</button>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+  <div th:if="${deleteError}" class="alert alert-danger" th:text="${deleteError}"></div>
+  <h1 class="text-center" th:text="#{details.heading}">Link Details</h1>
+  <p class="mb-2"><strong th:text="#{label.name}">Name:</strong> <span th:text="${link.name}"></span></p>
+  <p class="mb-2"><strong th:text="#{label.targetUrl}">Target URL:</strong> <span th:text="${link.targetUrl}"></span></p>
+  <p class="mb-2"><strong th:text="#{label.redirectUrl}">Redirect URL:</strong> <span th:text="${link.redirectUrl}"></span></p>
+  <p class="mb-2"><strong th:text="#{label.visitsCount}">Visits Count:</strong> <span th:text="${link.visitsCount}"></span></p>
+  <div class="d-flex gap-2 mt-3">
+  <a th:href="@{'/links/' + ${link.id} + '/edit'}" class="btn btn-secondary" th:text="#{btn.edit}">Edit</a>
+  <form th:action="@{/links/{id}/delete(id=${link.id})}" method="post" class="form-inline" style="display:inline;">
+    <input type="password" class="form-control mr-2" name="password" placeholder="Password (optional)">
+    <button type="submit" class="btn btn-danger" th:text="#{btn.delete}">Delete</button>
   </form>
+  </div>
+</div>
+    </div>
+  </div>
 </div>
 </body>
 </html>

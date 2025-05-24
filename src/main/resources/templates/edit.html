@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Edit Link</title>
+    <title th:text="#{edit.title}">Edit Link</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container">
-    <h1>Edit Link</h1>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+    <h1 class="text-center" th:text="#{edit.heading}">Edit Link</h1>
     <form th:action="@{'/links/' + ${link.id} + '/edit'}" th:object="${link}" method="post">
         <input type="hidden" name="lang" th:value="${param.lang}" />
-        <div class="form-group">
-            <label for="name">Name</label>
+        <div class="mb-3">
+            <label for="name" th:text="#{label.name}">Name</label>
             <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Enter name">
             <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
         </div>
-        <div class="form-group">
-            <label for="targetUrl">Target URL</label>
+        <div class="mb-3">
+            <label for="targetUrl" th:text="#{label.targetUrl}">Target URL</label>
             <input type="text" th:field="*{targetUrl}" class="form-control" id="targetUrl" placeholder="Enter URL">
             <div th:if="${#fields.hasErrors('targetUrl')}" th:errors="*{targetUrl}" class="text-danger"></div>
         </div>
-        <div class="form-group">
-            <label for="password">Password (required)</label>
+        <div class="mb-3">
+            <label for="password" th:text="#{label.passwordRequired}">Password (required)</label>
             <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="Enter password">
             <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
         </div>
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-primary" th:text="#{btn.update}">Update</button>
     </form>
+</div>
+    </div>
+  </div>
 </div>
 </body>
 </html>
