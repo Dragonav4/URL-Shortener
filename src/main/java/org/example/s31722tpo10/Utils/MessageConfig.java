@@ -1,4 +1,4 @@
-package org.example.s31722tpo10;
+package org.example.s31722tpo10.Utils;
 
 import org.example.s31722tpo10.Interfaces.IMessageConfig;
 import org.springframework.context.MessageSource;
@@ -15,10 +15,10 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import java.util.Locale;
 
 @Configuration
-public class MessageConfig implements IMessageConfig,WebMvcConfigurer {//WebMvcConfigurer
+public class MessageConfig implements IMessageConfig,WebMvcConfigurer {
 
     @Bean
-    public MessageSource messageSource() {
+    public MessageSource messageSrc() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
         source.setBasename("messages");
         source.setDefaultEncoding("UTF-8");
@@ -27,9 +27,9 @@ public class MessageConfig implements IMessageConfig,WebMvcConfigurer {//WebMvcC
 
     @Bean
     public LocalValidatorFactoryBean getValidator() {
-        LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
-        factoryBean.setValidationMessageSource(messageSource());
-        return factoryBean;
+        LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+        localValidatorFactoryBean.setValidationMessageSource(messageSrc());
+        return localValidatorFactoryBean;
     }
     @Bean
     public LocaleResolver localeResolver() {
@@ -39,9 +39,9 @@ public class MessageConfig implements IMessageConfig,WebMvcConfigurer {//WebMvcC
     }
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
-        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        lci.setParamName("lang");
-        return lci;
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("lang");
+        return localeChangeInterceptor;
     }
 
     @Override

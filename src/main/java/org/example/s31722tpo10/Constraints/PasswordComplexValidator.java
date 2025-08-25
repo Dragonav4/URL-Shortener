@@ -3,9 +3,12 @@ package org.example.s31722tpo10.Constraints;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import java.util.Objects;
+
 public class PasswordComplexValidator implements ConstraintValidator<PasswordComplex,String> {
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
+        if(Objects.equals(password, "")) return true;
         if (password == null || password.length() < 10) {
             build(context, "{password.length}");
             return false;

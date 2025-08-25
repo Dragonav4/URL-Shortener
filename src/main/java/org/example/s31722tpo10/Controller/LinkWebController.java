@@ -12,11 +12,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Locale;
 import java.util.Optional;
-import org.springframework.ui.Model;
 
 @Controller()
 @RequestMapping("/links")
@@ -50,10 +48,8 @@ public class LinkWebController {
             return "create";
         }
 
-        String baseUrl = getBaseUrl(request);
-        LinkDTO created = _linkService.create(dto, baseUrl);
+        LinkDTO created = _linkService.create(dto);
 
-        created.setRedirectUrl(baseUrl + "/red/" + created.getId());
 
         model.addAttribute("link", created);
         model.addAttribute("lang", language);
@@ -62,37 +58,22 @@ public class LinkWebController {
     @GetMapping("/{id}")
     public String viewLink(@PathVariable("id") String id,
                            @RequestParam(value = "lang", defaultValue = "en") String language,
-                           @RequestParam(value = "password", required = false) String password,
                            Model model,
                            HttpServletRequest request) {
-        Locale selectedLocale = Locale.forLanguageTag(language);
-        localeResolver.setLocale(request, null, selectedLocale);
-        String baseurl = getBaseUrl(request);
-        Optional<LinkDTO> link = _linkService.get(id, baseurl);
-        if (link.isEmpty()) {
-            return "notFound";
-        }
-        model.addAttribute("link", link.get());
-        model.addAttribute("lang", language);
-        return "details";
+        return isValidResult(id, language, model, request)
+            ? "details"
+            : "notFound";
     }
+
 
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable String id,
                                @RequestParam(value = "lang", defaultValue = "en") String language,
                                HttpServletRequest request,
                                Model model) {
-        Locale selectedLocale = Locale.forLanguageTag(language);
-        localeResolver.setLocale(request, null, selectedLocale);
-
-        Optional<LinkDTO> link = _linkService.get(id, null); //todo check it with null
-        if (link.isEmpty()) {
-            return "notFound";
-        }
-
-        model.addAttribute("link", link.get());
-        model.addAttribute("lang", language);
-        return "edit";
+        return isValidResult(id, language, model, request)
+                ? "edit"
+                : "notFound";
     }
 
     @PostMapping("/{id}/edit")
@@ -113,7 +94,7 @@ public class LinkWebController {
         return "redirect:/links/"+id+"?lang="+locale.getLanguage();
     }
 
-    @PostMapping("/{id}/delete") //todo add delete in edit, add add error and bootstarp
+    @PostMapping("/{id}/delete")
     public String deleteLink(@PathVariable String id,
                              @RequestParam(required = false) String password,
                              RedirectAttributes redirectAttributes){
@@ -127,11 +108,19 @@ public class LinkWebController {
         return "redirect:/links/create";
     }
 
-    private String getBaseUrl(HttpServletRequest request) {
-        return ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .build()
-                .toUriString();
+    private boolean isValidResult(String id,
+                                  String language,
+                                  Model model,
+                                  HttpServletRequest request) {
+        Locale selectedLocale = Locale.forLanguageTag(language);
+        localeResolver.setLocale(request, null, selectedLocale);
+        Optional<LinkDTO> link = _linkService.get(id);
+        if (link.isEmpty()) {
+            return false;
+        }
+        model.addAttribute("link", link.get());
+        model.addAttribute("lang", language);
+        return true;
     }
 }
 

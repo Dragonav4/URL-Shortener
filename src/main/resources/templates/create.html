@@ -9,7 +9,7 @@
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
     <div th:if="${deletedMessage}" class="alert alert-success" th:text="${deletedMessage}"></div>
-    <p style="color:red">DEBUG lang = [[${param.lang}]]</p>
+
     <h1 class="text-center" th:text="#{create.heading}">Create a New Link</h1>
     <form id="localeForm" th:action="@{/links/create}" method="get" class="mb-3">
         <select name="lang" onchange="document.getElementById('localeForm').submit()" class="form-control w-auto d-inline-block">

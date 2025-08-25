@@ -23,16 +23,15 @@ public class LinkController {
 
     @PostMapping
     public ResponseEntity<LinkDTO> create(@RequestBody LinkDTO dto) {
-        String base = currentBase();
-        LinkDTO saved = service.create(dto, base);
-        URI location = URI.create("%s/api/links/%s".formatted(base, saved.getId()));
+        LinkDTO saved = service.create(dto);
+
+        var location = URI.create(saved.getInfoPageUrl());
         return ResponseEntity.created(location).body(saved);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LinkDTO> get(@PathVariable String id) {
-        String base = currentBase();
-        return service.get(id, base) //todo split get into two separate methods(with base url)
+        return service.get(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -49,8 +48,5 @@ public class LinkController {
                                        @RequestHeader(value = "pass", required = false) String pass) {
         DeleteRes res = service.delete(id, pass);
         return ErrorMapper.map(res);
-    }
-    private String currentBase() {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
     }
 }

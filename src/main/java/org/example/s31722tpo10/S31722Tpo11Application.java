@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class S31722Tpo10Application {
+public class S31722Tpo11Application {
     public static void main(String[] args) {
-        SpringApplication.run(S31722Tpo10Application.class, args);
+        SpringApplication.run(S31722Tpo11Application.class, args);
     }
 
 }

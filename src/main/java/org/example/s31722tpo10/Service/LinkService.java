@@ -6,7 +6,7 @@ import jakarta.validation.Validator;
 import org.example.s31722tpo10.DataLayer.Link;
 import org.example.s31722tpo10.DataLayer.Models.LinkDTO;
 import org.example.s31722tpo10.Interfaces.LinkRepository;
-import org.example.s31722tpo10.LinkMapper;
+import org.example.s31722tpo10.Utils.LinkMapper;
 import org.example.s31722tpo10.Utils.DeleteRes;
 import org.example.s31722tpo10.Utils.UpdateRes;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -45,20 +45,20 @@ public class LinkService {
                 .collect(Collectors.joining());
     }
 
-    public LinkDTO create(LinkDTO dto, String baseURL) {
+    public LinkDTO create(LinkDTO dto) {
         Set<ConstraintViolation<LinkDTO>> violations = validator.validate(dto);
         if(!violations.isEmpty()) throw new ConstraintViolationException(violations);
         Link entity = _mapper.toEntity(dto);
         entity.setId(generateRandomSlug());
         entity.setPasswordHash(dto.getPassword() == null ? null : passwordEncoder.encode(dto.getPassword()));
         _linkRepository.save(entity);
-        return _mapper.toDto(entity, baseURL);
+        return _mapper.toDto(entity);
     }
 
-    public Optional<LinkDTO> get(String id, String baseURL) {
+    public Optional<LinkDTO> get(String id) {
         return _linkRepository
                 .findById(id)
-                .map(link -> _mapper.toDto(link, baseURL));
+                .map(_mapper::toDto);
     }
 
     public UpdateRes update(String id, LinkDTO patch, String password) {

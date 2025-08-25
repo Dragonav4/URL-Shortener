@@ -1,7 +1,6 @@
 package org.example.s31722tpo10.Controller;
 
 import org.example.s31722tpo10.Service.LinkService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

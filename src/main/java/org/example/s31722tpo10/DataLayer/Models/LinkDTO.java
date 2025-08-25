@@ -8,26 +8,26 @@ import org.example.s31722tpo10.Constraints.UniqueUrl;
 import org.hibernate.validator.constraints.URL;
 
 public class LinkDTO {
-    private String Id;
+    private String id;
     @NotBlank(message = "{link.name.blank}")
     @Size(min=5,max=20, message = "{link.name.size}")
     private String name;
     @NotBlank(message = "{link.url.blank}")
     @URL(protocol = "https", message = "{link.url.https}")
-    @URL(message = "{link.url.invalid}") //todo нужно ли?
+    @URL(message = "{link.url.invalid}")
     @UniqueUrl
     private String targetUrl;
-    private String redirectUrl;
     private long visitsCount;
     @PasswordComplex()
     private String password;
 
+    private String baseUrl;
 
-    public LinkDTO(String id, String name, String targetUrl, String redirectUrl, long visitsCount, String password) {
-        Id = id;
+
+    public LinkDTO(String id, String name, String targetUrl, long visitsCount, String password) {
+        this.id = id;
         this.name = name;
         this.targetUrl = targetUrl;
-        this.redirectUrl = redirectUrl;
         this.visitsCount = visitsCount;
         this.password = password;
     }
@@ -45,7 +45,7 @@ public class LinkDTO {
     }
 
     public String getId() {
-        return Id;
+        return id;
     }
 
     public String getName() {
@@ -56,16 +56,12 @@ public class LinkDTO {
         return targetUrl;
     }
 
-    public String getRedirectUrl() {
-        return redirectUrl;
-    }
-
     public long getVisitsCount() {
         return visitsCount;
     }
 
     public void setId(String id) {
-        Id = id;
+        this.id = id;
     }
 
     public void setName(String name) {
@@ -76,13 +72,20 @@ public class LinkDTO {
         this.targetUrl = targetUrl;
     }
 
-    public void setRedirectUrl(String redirectUrl) {
-        this.redirectUrl = redirectUrl;
-    }
-
     public void setVisitsCount(long visitsCount) {
         this.visitsCount = visitsCount;
     }
 
 
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public String getRedirectUrl() {
+        return baseUrl+"/red/"+ id;
+    }
+
+    public String getInfoPageUrl() {
+        return baseUrl+"/links/"+ id;
+    }
 }
